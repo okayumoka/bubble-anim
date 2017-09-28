@@ -14,7 +14,6 @@
 	var circles = [];
 
 	document.addEventListener('DOMContentLoaded', function(event) {
-		console.log('DOMContentLoaded.');
 		createCanvas();
 		createCircles();
 		initOnResize();
@@ -26,12 +25,8 @@
 		canvas.id = '__background_animation_canvas__';
 		canvas.style.position = 'fixed';
 		canvas.style.top = 0;
-		// canvas.style.right = 0;
-		// canvas.style.bottom = 0;
 		canvas.style.left = 0;
 		canvas.style.zIndex = -1;
-		// canvas.style.width = '100%';
-		// canvas.style.height = '100%';
 		canvas.style.margin = '0';
 		canvas.style.padding = '0';
 
