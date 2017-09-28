@@ -1,9 +1,12 @@
 const webpack = require("webpack");
 
 module.exports = {
-	entry: './bubble-anim.js',
+	entry: {
+		'build': './src/bubble-anim.js',
+		'docs': './src/bubble-anim.js'
+	},
 	output: {
-		filename: "./bubble-anim.min.js"
+		filename: "./[name]/bubble-anim.min.js"
 	},
 	plugins: [
 		new webpack.optimize.UglifyJsPlugin()
