@@ -13,7 +13,7 @@
 	var context = null;
 	var circles = [];
 
-	document.addEventListener('DOMContentLoaded', function(event) {
+	window.addEventListener('load', function(event) {
 		createCanvas();
 		createCircles();
 		initOnResize();
