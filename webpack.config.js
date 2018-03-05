@@ -2,7 +2,7 @@ const webpack = require("webpack");
 
 module.exports = {
 	entry: {
-		'build': './src/bubble-anim.js',
+		'dist': './src/bubble-anim.js',
 		'docs': './src/bubble-anim.js'
 	},
 	output: {

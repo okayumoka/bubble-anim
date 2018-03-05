@@ -8,6 +8,7 @@
 	var minSpeed = 0.02;
 	var maxSpeed = 0.05;
 	var circleNum = 15;
+	var fadeInTime = 1500;
 
 	var canvas = null;
 	var context = null;
@@ -67,10 +68,15 @@
 		});
 	};
 
-	var draw = function() {
+	var draw = function(tick, elapsed) {
 		context.beginPath();
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context.closePath();
+		if (tick < fadeInTime) {
+			context.globalAlpha = tick / fadeInTime;
+		} else {
+			context.globalAlpha = 1;
+		}
 		for (var i = 0; i < circles.length; i++) {
 			var c = circles[i];
 			context.beginPath();
@@ -81,32 +87,26 @@
 		}
 	};
 
-	var move = (function() {
-		var preTick = null;
-		return function() {
-			var canvasWidth = canvas.width;
-			var canvasHeight = canvas.height;
-			var tick = Date.now();
-			if (preTick === null) preTick = tick;
-			for (var i = 0; i < circles.length; i++) {
-				var c = circles[i];
-				var d = c.speed * (tick - preTick);
-				var moveX = d * Math.cos(c.angle);
-				var moveY = d * Math.sin(c.angle);
-				c.x += moveX;
-				c.y += moveY;
-				if (c.x <= 0 || canvasWidth <= c.x) {
-					c.angle = Math.atan2(moveY, -moveX);
-					c.x = c.x <= 0 ? 0 : canvasWidth;
-				}
-				if (c.y <= 0 || canvasHeight <= c.y) {
-					c.angle = Math.atan2(-moveY, moveX);
-					c.y = c.y <= 0 ? 0 : canvasHeight;
-				}
+	var move = function(tick, elapsed) {
+		var canvasWidth = canvas.width;
+		var canvasHeight = canvas.height;
+		for (var i = 0; i < circles.length; i++) {
+			var c = circles[i];
+			var d = c.speed * (elapsed);
+			var moveX = d * Math.cos(c.angle);
+			var moveY = d * Math.sin(c.angle);
+			c.x += moveX;
+			c.y += moveY;
+			if (c.x <= 0 || canvasWidth <= c.x) {
+				c.angle = Math.atan2(moveY, -moveX);
+				c.x = c.x <= 0 ? 0 : canvasWidth;
 			}
-			preTick = tick;
-		};
-	})();
+			if (c.y <= 0 || canvasHeight <= c.y) {
+				c.angle = Math.atan2(-moveY, moveX);
+				c.y = c.y <= 0 ? 0 : canvasHeight;
+			}
+		}
+	};
 
 	var startTimer = function() {
 		var requestAnimationFrame = 
@@ -119,14 +119,21 @@
 				window.setTimeout(loopFunc, 33);
 			}
 		};
+		var startTick = null;
+		var preTick = null;
 		var loopFunc = function() {
 			try {
-				move();
-				draw();
+				var tick = Date.now();
+				if (startTick === null) startTick = tick;
+				if (preTick === null) preTick = tick;
+				// console.log('st=' + startTick + ' t=' + tick + ' diff=' + (tick - startTick));
+				move(tick - startTick, tick - preTick);
+				draw(tick - startTick, tick - preTick);
+				preTick = tick;
+				requestFrame(loopFunc);
 			} catch (e) {
 				console.log(e);
 			}
-			requestFrame(loopFunc);
 		};
 		requestFrame(loopFunc);
 	};
